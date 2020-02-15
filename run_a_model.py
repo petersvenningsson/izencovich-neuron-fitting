@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 # Local
 from dataset.dataset_QSNMC import QSNMC
-from models.iz_neuron import IZModel
+from models.izencovich_neuron import IzencovichModel
 from scipy.signal import fftconvolve
 
 
