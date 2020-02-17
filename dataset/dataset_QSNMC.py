@@ -9,7 +9,6 @@ import pickle
 # Third party
 import numpy as np
 from NeuroTools.signals import AnalogSignal
-import matplotlib.pyplot as plt
 
 #############
 # CONSTANTS #
@@ -20,15 +19,15 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 # CLASSES #
 #############
 
+# TODO: create interface for dataset type object
 class QSNMC:
     """ Dataset loader for data belonging the 2009 competition QSNMC.
     """
     def __init__(self, file_current = PATH + '/2009a/current.txt', file_voltage = PATH + '/2009a/voltage_allrep.txt', dt = 1e-4):
         self.file_current = file_current
         self.file_voltage = file_voltage
-        self.dt = 1e-4 # 10 kHz sampling.
+        self.dt = dt
         self.current = None
-        self._current = None
         self.voltage = None
         self.spike_trains = []
         self.gold_voltages = []
@@ -43,7 +42,7 @@ class QSNMC:
 
         # trunkate the current signal to the length of the voltage signal.
         current = current[0:voltage.shape[0]]
-        self._current = current
+        self.current = current
         self.voltage = voltage
 
     def pickle_dataset(self):
@@ -77,7 +76,7 @@ class QSNMC:
                 current = pickle.load(f)
             with open(voltage_pickle_path, 'rb') as f:
                 voltage = pickle.load(f)
-        self._current = current
+        self.current = current
         self.voltage = voltage
 
     def _generate_spike_trains(self):
@@ -90,15 +89,10 @@ class QSNMC:
 
             vm_trial = AnalogSignal(voltage_trial, self.dt)
             spike_train = vm_trial.threshold_detection(0)
-            self.spike_trains.append(spike_train)
-        self.current = AnalogSignal(self._current, self.dt)
+            self.spike_trains.append(spike_train.spike_times)
 
     def initialize_dataset(self):
         """ Initializes the dataset by setting instance variables.
         """
         self.load_pickled_dataset()
         self._generate_spike_trains()
-
-##########
-# SCRIPT #
-##########

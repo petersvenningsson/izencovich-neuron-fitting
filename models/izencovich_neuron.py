@@ -37,12 +37,11 @@ class IzencovichModel(sciunit.Model, ProducesSpikes):
 
         super().__init__(**kwargs)
 
-    def set_external_current(self, current):
-        """ Parsing function for the NeuroTools AnalogSignal type object current.
+    def set_external_current(self, dataset):
+        """ Parsing function for a dataset.
         """
-
-        self.i_ext = current.signal
-        self.dt = current.dt
+        self.i_ext = dataset.current
+        self.dt = dataset.dt
 
     def euler_forward(self, u, v, I):
         """ Calculates one Euler step for the Izhikevich neuron.
@@ -92,7 +91,7 @@ class IzencovichModel(sciunit.Model, ProducesSpikes):
 
 
 
-    def get_spike_train(self, current):
+    def get_spike_train(self, dataset):
         """ Calculates the spike train produced by the external current.
         Inputs:
             current - AnalogSignal type instance describing the external current.
@@ -100,20 +99,9 @@ class IzencovichModel(sciunit.Model, ProducesSpikes):
         """
 
         spike_trains = []
-        self.set_external_current(current)
+        self.set_external_current(dataset)
         self.simulate()
         voltage_trial = self.v
         vm_trial = AnalogSignal(voltage_trial, self.dt)
-        spike_train = vm_trial.threshold_detection(0)
+        spike_train = vm_trial.threshold_detection(0).spike_times
         return spike_train
-
-
-# Instantiate a model.
-
-#a = 0.02
-#b = 0.2
-#c = -50
-#d = 2
-#v_spike = 30
-
-#iz_model = IZModel(a, b, c, d, v_spike, name='Izhikevich')
