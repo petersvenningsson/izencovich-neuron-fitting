@@ -1,3 +1,7 @@
+# Author
+# Peter Svenningsson
+# Email
+# peter.o.svenningsson@gmail.com
 ###########
 # IMPORTS #
 ###########
@@ -8,7 +12,7 @@ import numpy as np
 from dataset.dataset_QSNMC import QSNMC
 from models.izencovich_neuron import IzencovichModel
 from evaluators.MD_star import MDStarComparator
-
+from geneutility.population import Population
 
 #############
 # CONSTANTS #
@@ -24,12 +28,12 @@ v_spike = 30
 
 # Load dataset
 dataset = QSNMC()
-
+population = Population(IzencovichModel, 10, dataset)
+population.initialize_population()
+print("hej")
 # Initialize model
-iz_model = IzencovichModel(a, b, c, d, v_spike)
-# Generate spike train
-predicted_spike_time_train = iz_model.get_spike_train(dataset)
-observed_spike_time_trains = dataset.spike_trains
+# iz_model = IzencovichModel(a, b, c, d, dataset)
+# iz_model.set_parameters(a=0.03)
 
-comparator = MDStarComparator()
-score = comparator.evaluate(observed_spike_time_trains, predicted_spike_time_train)
+# comparator = MDStarComparator()
+# iz_model.fitness = comparator.evaluate(iz_model, dataset.spike_trains)

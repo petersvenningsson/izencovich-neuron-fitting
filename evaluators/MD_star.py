@@ -1,3 +1,7 @@
+# Author
+# Peter Svenningsson
+# Email
+# peter.o.svenningsson@gmail.com
 ###########
 # IMPORTS #
 ###########
@@ -64,11 +68,12 @@ class MDStarComparator():
         average_spike_train = average_spike_train / n_spike_trains
         return average_spike_train
 
-    def evaluate(self, observed_spike_time_trains, predicted_spike_time_train):
+    def evaluate(self, individual, observed_spike_time_trains):
         """ MD* proposed by Richard Naud as a spike train similarity measure.
          See Improved Similarity Measures for Small Sets of Spike Trains, Richard Naud et al. for
          more information."""
-        print("Computing Md* {} ms precision...".format(self.delta))
+
+        predicted_spike_time_train = individual.spike_times
         observed_spike_trains = []
 
         n_trains = len(observed_spike_time_trains)

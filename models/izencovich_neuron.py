@@ -1,28 +1,26 @@
-
+# Author
+# Peter Svenningsson
+# Email
+# peter.o.svenningsson@gmail.com
 ###########
 # IMPORTS #
 ###########
 
 # Third party
-import sciunit
 import numpy as np
-from neuronunit.capabilities import ProducesSpikes
 from NeuroTools.signals import AnalogSignal
 
-
-#############
-# CONSTANTS #
-#############
-
+# Local
+from . import abstract_neuron
 
 # TODO: Implement peak finding to set correct value v_spike.
 
-class IzencovichModel(sciunit.Model, ProducesSpikes):
+class IzencovichModel(abstract_neuron.Neuron):
     """
-    Model of a Izhikevich neuron. Extends sciunit.Model and interfaces neuronunit.capabilities.ProducesSpikes.
+    Model of a Izhikevich neuron.
     """
 
-    def __init__(self, a, b, c, d, v_spike=30.0, TMAX = 39.0, **kwargs):
+    def __init__(self, a, b, c, d, dataset, v_spike=30.0, TMAX = 39.0):
         self.a = a  # Recovery parameter for variable u. Low a provides long recovery.
         self.b = b  # Sensativity of u to sub-threshhold dynamics of v.
         self.c = c  # Reset value of potential v after action potential spike.
@@ -31,11 +29,10 @@ class IzencovichModel(sciunit.Model, ProducesSpikes):
         self.TMAX = TMAX
         self.u = None # Initialized in simulate method.
         self.v = None # Initialized in simulate method.
-        self.dt = None # Initialized by set_external_current method.
-        self.i_ext = None # Initialized by set_external_current method.
-        self.dt = None # Initialized by set_external_current method.
-
-        super().__init__(**kwargs)
+        self.i_ext = dataset.current # External input current.
+        self.dt = dataset.dt # Sample resolution
+        self.spike_times = self.simulate_spiking_times()
+        self.fitness = None
 
     def set_external_current(self, dataset):
         """ Parsing function for a dataset.
@@ -60,7 +57,7 @@ class IzencovichModel(sciunit.Model, ProducesSpikes):
         _u = u + self.dt * (self.a * (self.b * v - u))
         return _v, _u
 
-    def simulate(self):
+    def simulate_voltage(self):
         """ Simulates the pulse train of the Izhikevich neuron by setting self.v_model.
         Inputs:
             T_max - Maximum simulation time in ms
@@ -89,19 +86,32 @@ class IzencovichModel(sciunit.Model, ProducesSpikes):
             self.v[t] = v_iteration_next
             self.u[t] = u_iteration_next
 
-
-
-    def get_spike_train(self, dataset):
+    def simulate_spiking_times(self):
         """ Calculates the spike train produced by the external current.
         Inputs:
-            current - AnalogSignal type instance describing the external current.
+            current - Numpy array type instance describing the external current.
         Outputs:
         """
 
         spike_trains = []
-        self.set_external_current(dataset)
-        self.simulate()
+        self.simulate_voltage()
         voltage_trial = self.v
         vm_trial = AnalogSignal(voltage_trial, self.dt)
-        spike_train = vm_trial.threshold_detection(0).spike_times
-        return spike_train
+        spiking_times = vm_trial.threshold_detection(0).spike_times
+        self.spike_times = spiking_times
+        return spiking_times
+
+    def set_parameters(self, **kwargs):
+        """ Sets the model parameters and then simulates new spiking times.
+        Input:
+            **kwargs: Named parameters for any attribute of model.
+        """
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.simulate_spiking_times()
+
+    def get_fitness(self):
+        return self.fitness
+
+    def get_spike_times(self):
+        return self.spike_times
