@@ -5,6 +5,8 @@
 ###########
 # IMPORTS #
 ###########
+# Standard
+import json
 # 3rd party
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,11 +30,12 @@ v_spike = 30
 
 # Load dataset
 dataset = QSNMC()
-population = Population(IzencovichModel, 10, dataset)
-population.initialize_population()
-print("hej")
+#population = Population(IzencovichModel, 10, dataset)
+#population.initialize_population()
+#print("hej")
 # Initialize model
-# iz_model = IzencovichModel(a, b, c, d, dataset)
+iz_model = IzencovichModel(a, b, c, d, dataset)
+print("a")
 # iz_model.set_parameters(a=0.03)
 
 # comparator = MDStarComparator()

@@ -5,20 +5,26 @@
 ###########
 # IMPORTS #
 ###########
+# Standard
+import json
 
 # Third party
 import numpy as np
 from NeuroTools.signals import AnalogSignal
 
 # Local
-from . import abstract_neuron
+from .abstract_neuron import Neuron
+from . import izencovich_neuron
 
 # TODO: Implement peak finding to set correct value v_spike.
+# TODO: Create encoder which is step-between Neural model and GA methods
 
-class IzencovichModel(abstract_neuron.Neuron):
+class IzencovichModel(Neuron):
     """
     Model of a Izhikevich neuron.
     """
+    with open("models/izencovich_neuron.json", 'r') as file:
+        parameter_intervals = json.loads(file.read())['parameters']
 
     def __init__(self, a, b, c, d, dataset, v_spike=30.0, TMAX = 39.0):
         self.a = a  # Recovery parameter for variable u. Low a provides long recovery.

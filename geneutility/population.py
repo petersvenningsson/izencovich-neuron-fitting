@@ -26,11 +26,11 @@ class Population:
         """ # TODO docstring"""
         individuals = []
         for i in range(0, self.population_size):
-            print(i)
-            a = 0.02
-            b = 0.2
-            c = -50
-            d = 2
+
+            individual = self.initialize_individual()
             individual = self.NeuronModel(a, b, c, d, self.dataset)
             individuals.append(individual)
         self.individuals = individuals
+
+    def initialize_individual(self):
+        """ Initializes a individual of <NeuronModel> with parameter intervals as specified by <NeuronModel>.json."""
