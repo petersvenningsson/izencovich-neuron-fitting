@@ -32,8 +32,8 @@ MDStarComparator
 
 QSNMCDataset
 
+TournamentSelection
+
 # Config
-<Neuron>.json: defines parametrization of neuron with intervals for random initialization 
-  
-  or defines parameters for seeded initialization.
+<Neuron>.json: defines parametrization of neuron with intervals for random initialization or defines parameters for seeded initialization.
 
