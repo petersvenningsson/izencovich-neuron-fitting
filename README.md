@@ -11,19 +11,29 @@ Fitting of dyn-sys. neuron models to wild data with stochastic optimization meth
 
 # Abstract classes
 Neurons: (Parent of IzencovichNeurons, integrate-and-fire ect)
+
 Encoders: (Real number, Binary)
+
 Evaluator: (MD_star)
 
 # Classes
+
 Population
+
 MutationOperator
+
 CrossOverOperator
+
 IzencovichNeuron
+
 IntegrateAndFireNeuron
+
 MDStarComparator
+
 QSNMCDataset
 
 # Config
 <Neuron>.json: defines parametrization of neuron with intervals for random initialization 
+  
   or defines parameters for seeded initialization.
 
