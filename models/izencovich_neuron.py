@@ -16,7 +16,7 @@ from NeuroTools.signals import AnalogSignal
 from .abstract_neuron import Neuron
 from . import izencovich_neuron
 
-# TODO: Implement peak finding to set correct value v_spike.
+# TODO: Implement peak finding to set correct value v_max.
 # TODO: Create encoder which is step-between Neural model and GA methods
 
 class IzencovichModel(Neuron):
@@ -24,14 +24,17 @@ class IzencovichModel(Neuron):
     Model of a Izhikevich neuron.
     """
     with open("models/izencovich_neuron.json", 'r') as file:
-        parameter_intervals = json.loads(file.read())['parameters']
+        parameter_intervals = json.loads(file.read())['parameter_intervals']
 
-    def __init__(self, a, b, c, d, dataset, v_spike=30.0, TMAX = 39.0):
+    def __init__(self,dataset, a, b, c, d, e = 0.04, g = 5, h = 140, v_max=30.0, TMAX = 39.0):
         self.a = a  # Recovery parameter for variable u. Low a provides long recovery.
         self.b = b  # Sensativity of u to sub-threshhold dynamics of v.
         self.c = c  # Reset value of potential v after action potential spike.
         self.d = d  # Reset value of potential u after action potential spike.
-        self.v_spike = v_spike
+        self.e = e  # Default values of e, g, h are well motivated when large-scale networks are simulated.
+        self.g = g  
+        self.h = h
+        self.v_max = v_max
         self.TMAX = TMAX
         self.u = None # Initialized in simulate method.
         self.v = None # Initialized in simulate method.
@@ -58,8 +61,7 @@ class IzencovichModel(Neuron):
 
         # The constants 0.04, 5, 140 are the one fits all parameters from Simple Model of Spiking Neurons E. Izhikevich.
         # These constants are justified when simulating large networks of neurons.
-        # TODO: Parameterise the four constants 0.04, 5, 140.
-        _v = v + self.dt * (0.04 * v ** 2 + 5 * v + 140 - u + I)
+        _v = v + self.dt * (self.e * v ** 2 + self.g * v + self.h - u + I)
         _u = u + self.dt * (self.a * (self.b * v - u))
         return _v, _u
 
@@ -86,7 +88,7 @@ class IzencovichModel(Neuron):
 
             v_iteration_next, u_iteration_next = self.euler_forward(u_iteration, v_iteration, i_ext)
 
-            if v_iteration_next > self.v_spike:
+            if v_iteration_next > self.v_max:
                 v_iteration_next = self.c
                 u_iteration_next = u_iteration_next + self.d
             self.v[t] = v_iteration_next

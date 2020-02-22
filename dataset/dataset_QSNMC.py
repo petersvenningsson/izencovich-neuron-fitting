@@ -20,7 +20,7 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 #############
 
 # TODO: create interface for dataset type object
-class QSNMC:
+class QSNMCDataset:
     """ Dataset loader for data belonging the 2009 competition QSNMC.
     """
     def __init__(self, file_current = PATH + '/2009a/current.txt', file_voltage = PATH + '/2009a/voltage_allrep.txt', dt = 1e-4):
