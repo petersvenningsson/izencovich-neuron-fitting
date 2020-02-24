@@ -17,6 +17,8 @@ from evaluators.MD_star import MDStarComparator
 from GA.population import Population
 from GA.encoders import RealNumberEncoder
 from GA.mutators import CreepMutation
+from GA.selection import TournamentCrossover
+from GA.elitism import Elitism
 #############
 # CONSTANTS #
 #############
@@ -28,31 +30,30 @@ v_max = 30
 ##########
 # SCRIPT #
 ##########
-
+selector = TournamentCrossover()
 comparator = MDStarComparator()
 encoder = RealNumberEncoder()
-mutator = CreepMutation(1, 0.1, encoder)
+elitism = Elitism()
+mutator = CreepMutation(encoder)
 dataset = QSNMCDataset()
 NeuronModel = IzencovichModel
-population = Population(NeuronModel, 2, dataset)
+population = Population(NeuronModel, population_size = 2, dataset)
 population.initialize_population(encoder)
+
 for individual in population.individuals:
     score = comparator.evaluate(individual, dataset.spike_trains)
     individual.fitness = score
+
+population.set_most_fit_individual()
+next_generation = selector.population_crossover(population)
+
+population.individuals = next_generation
 for individual in population.individuals:
     mutator.mutate_individual(individual)
+elitism.elitism(population)
+
 for individual in population.individuals:
     score = comparator.evaluate(individual, dataset.spike_trains)
     individual.fitness = score
 
 
-# Initialize model
-#iz_model = NeuronModel(a, b, c, d, dataset)
-#encoder = RealNumberEncoder(NeuronModel.parameter_intervals)
-#encoded_parameters = encoder.encode(iz_model)
-
-#print(encoded_parameters)
-#decoded_params = encoder.decode(iz_model, **encoded_parameters)
-
-# comparator = MDStarComparator()
-# iz_model.fitness = comparator.evaluate(iz_model, dataset.spike_trains)

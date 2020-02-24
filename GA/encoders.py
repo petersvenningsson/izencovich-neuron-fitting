@@ -68,7 +68,8 @@ class RealNumberEncoder(Encoder):
             decoded_parameters[parameter] = encoded_parameter_value*interval_size - abs(lower_bound)
         return decoded_parameters
 
-    def get_initialized_encoding(self):
+    @staticmethod
+    def get_initialized_encoding():
         """ Returns a random number in [0,1]
         """
         return random.random()

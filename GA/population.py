@@ -18,7 +18,7 @@ class Population:
         self.individuals = []
         self.population_size = population_size
         self.NeuronModel = NeuronModel
-        self.best_individual = None
+        self.most_fit_individual = None
         self.dataset = dataset
 
     def initialize_population(self, encoder):
@@ -43,3 +43,6 @@ class Population:
 
         return individual
 
+    def set_most_fit_individual(self):
+        sorted_individuals = sorted(self.individuals, key=lambda x: x.fitness,reverse = True)
+        self.most_fit_individual = sorted_individuals[0]

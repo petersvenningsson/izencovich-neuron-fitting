@@ -72,7 +72,7 @@ class MDStarComparator():
         """ MD* proposed by Richard Naud as a spike train similarity measure.
          See Improved Similarity Measures for Small Sets of Spike Trains, Richard Naud et al. for
          more information."""
-
+        individual.simulate_spiking_times()
         predicted_spike_time_train = individual.spike_times
         observed_spike_trains = []
 

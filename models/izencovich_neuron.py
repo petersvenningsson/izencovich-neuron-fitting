@@ -38,10 +38,17 @@ class IzencovichModel(Neuron):
         self.TMAX = TMAX
         self.u = None # Initialized in simulate method.
         self.v = None # Initialized in simulate method.
+        self.dataset = dataset # Save dataset to simplify __copy__
         self.i_ext = dataset.current # External input current.
         self.dt = dataset.dt # Sample resolution
-        self.spike_times = self.simulate_spiking_times()
+        self.spike_times = None
         self.fitness = None
+
+    def __copy__(self):
+        new_copy = IzencovichModel(self.dataset, self.a, self.b, self.c, self.d, self.e, self.g, self.h, self.v_max,
+                                   self.TMAX)
+        return new_copy
+
 
     def set_external_current(self, dataset):
         """ Parsing function for a dataset.
@@ -116,7 +123,7 @@ class IzencovichModel(Neuron):
         """
         for key, value in kwargs.items():
             setattr(self, key, value)
-        self.simulate_spiking_times()
+        self.spike_times = None
 
     def get_fitness(self):
         return self.fitness

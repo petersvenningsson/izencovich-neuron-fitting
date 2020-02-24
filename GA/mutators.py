@@ -16,7 +16,7 @@ import random
 # TODO abstract class for mutators
 
 class CreepMutation:
-    def __init__(self, mutation_probability, creep_rate, encoder: Encoder):
+    def __init__(self, encoder: Encoder, mutation_probability = 0.1, creep_rate = 0.1):
         self.mutation_probability = mutation_probability
         self.creep_rate = creep_rate
         self.encoder = encoder
@@ -24,7 +24,7 @@ class CreepMutation:
     def mutate_individual(self, neuron):
         """ Mutates the parameters of a individual.
         Input:
-        neuron: A instance which interfaces NeuronModel.
+            A instance which interfaces NeuronModel.
         Output:
         """
         encoded_parameters = self.encoder.encode(neuron)
