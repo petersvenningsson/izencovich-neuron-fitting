@@ -37,7 +37,7 @@ elitism = Elitism()
 mutator = CreepMutation(encoder)
 dataset = QSNMCDataset()
 NeuronModel = IzencovichModel
-population = Population(NeuronModel, population_size = 2, dataset)
+population = Population(NeuronModel,  2, dataset)
 population.initialize_population(encoder)
 
 for individual in population.individuals:
@@ -50,8 +50,9 @@ next_generation = selector.population_crossover(population)
 population.individuals = next_generation
 for individual in population.individuals:
     mutator.mutate_individual(individual)
+print("hej")
 elitism.elitism(population)
-
+print("då")
 for individual in population.individuals:
     score = comparator.evaluate(individual, dataset.spike_trains)
     individual.fitness = score
