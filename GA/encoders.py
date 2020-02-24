@@ -5,14 +5,6 @@
 ###########
 # IMPORTS #
 ###########
-# Standard
-
-###########
-# CLASSES #
-###########
-###########
-# IMPORTS #
-###########
 # standard
 from abc import ABC, abstractmethod
 import random
