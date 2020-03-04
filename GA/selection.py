@@ -15,7 +15,7 @@ import copy
 
 
 class TournamentCrossover:
-    def __init__(self, crossover_probability = 0.7, tournament_selection_parameter = 0.75, tournament_size = 4):
+    def __init__(self, crossover_probability = 0.7, tournament_selection_parameter = 0.7, tournament_size = 3):
         self.crossover_probability = crossover_probability
         self.tournament_selection_parameter = tournament_selection_parameter
         self.tournament_size = tournament_size
@@ -55,8 +55,8 @@ class TournamentCrossover:
                 copy.copy(individual_1), copy.copy(individual_2), population
             )
 
-            next_generation.append(individual_1)
-            next_generation.append(individual_2)
+            next_generation.append(next_generation_individual_1)
+            next_generation.append(next_generation_individual_2)
         return next_generation
 
     def one_point_crossover(self, individual_1, individual_2, population):

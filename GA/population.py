@@ -7,7 +7,9 @@
 ###########
 # Standard
 import random
-
+import copy
+# Local
+from .mutators import CreepMutation
 ###########
 # CLASSES #
 ###########
@@ -20,6 +22,28 @@ class Population:
         self.NeuronModel = NeuronModel
         self.most_fit_individual = None
         self.dataset = dataset
+
+    def initialize_population_seeded(self, encoder):
+        """ Initializes the population gaussianly around the seeded models.
+        """
+        individuals = []
+        for i in range(0, self.population_size):
+            individual = self.initialize_individual_seeded(encoder)
+            individuals.append(individual)
+        self.individuals = individuals
+
+    def initialize_individual_seeded(self, encoder):
+
+        # A mutator is created to emulate the gaussian initialization around the seeded models.
+        mutator = CreepMutation(encoder, mutation_probability=1, creep_rate=0.035, gaussian_creep=True)
+        seed = random.choice(list(self.NeuronModel.neuron_seeds.keys()))
+        parameters = self.NeuronModel.neuron_seeds[seed]
+        new_individual = self.NeuronModel(self.dataset, **parameters)
+
+        mutator.mutate_individual(new_individual)
+        return new_individual
+
+
 
     def initialize_population(self, encoder):
         """ Initialize population without any seeding models. Model parameters are randonly selected within
@@ -43,6 +67,8 @@ class Population:
 
         return individual
 
+
+
     def set_most_fit_individual(self):
         sorted_individuals = sorted(self.individuals, key=lambda x: x.fitness,reverse = True)
-        self.most_fit_individual = sorted_individuals[0]
+        self.most_fit_individual = copy.copy(sorted_individuals[0])

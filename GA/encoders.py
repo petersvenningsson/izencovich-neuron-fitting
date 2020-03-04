@@ -65,7 +65,7 @@ class RealNumberEncoder(Encoder):
             # Extract float type objects for parameter interval bounds.
             lower_bound, upper_bound = [float(s) for s in neuron.parameter_intervals[parameter].split(':')]
             interval_size = upper_bound - lower_bound
-            decoded_parameters[parameter] = encoded_parameter_value*interval_size - abs(lower_bound)
+            decoded_parameters[parameter] = encoded_parameter_value*interval_size + lower_bound
         return decoded_parameters
 
     @staticmethod
@@ -73,3 +73,6 @@ class RealNumberEncoder(Encoder):
         """ Returns a random number in [0,1]
         """
         return random.random()
+
+if __name__ == "main":
+    encode = RealNumberEncoder()

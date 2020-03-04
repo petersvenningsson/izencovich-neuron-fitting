@@ -1,0 +1,75 @@
+  {
+    "_comment": "This file contains the parametrization of the Izencovich neuron. The max and min values of parameters must be set. Any parameters included in 'parameter_intervals' will be used in the optimization. The parameter must be found in the attribute of the Neuron model.",
+    "parameter_intervals": {
+      "a": "-0.1:0.4",
+      "b": "0:8",
+      "c": "-65:-50",
+      "d": "0:250",
+      "C": "1:250",
+      "v_rest": "-80:-50",
+      "v_threshold":  "-55:-35",
+      "k": "0.4:3.5"
+    },
+    "neuron_seeds": {
+      "Regular Spiking": {
+        "a": "0.03",
+        "b": "-2",
+        "c": "-50",
+        "d": "100",
+        "C": "100",
+        "v_rest": "-60",
+        "v_threshold": "-50",
+        "k": "0.7"
+      },
+      "Intrinsically Bursting": {
+        "a": "0.01",
+        "b": "5",
+        "c": "-56",
+        "d": "130",
+        "C": "150",
+        "v_rest": "-75",
+        "v_threshold": "-45",
+        "k": "1.2"
+      },
+      "Chattering": {
+        "a": "0.03",
+        "b": "1",
+        "c": "-40",
+        "d": "150",
+        "C": "50",
+        "v_rest": "-60",
+        "v_threshold": "-40",
+        "k": "1.5"
+      },
+      "Low-Threshold Spiking": {
+        "a": "0.03",
+        "b": "8",
+        "c": "-40",
+        "d": "670",
+        "C": "100",
+        "v_rest": "-56",
+        "v_threshold": "-42",
+        "k": "3"
+      },
+      "Late Spiking": {
+        "a": "0.17",
+        "b": "5",
+        "c": "-45",
+        "d": "100",
+        "C": "20",
+        "v_rest": "-66",
+        "v_threshold": "-40",
+        "k": "1.2"
+      },
+      "Thalamocortical": {
+        "a": "0.01",
+        "b": "5",
+        "c": "-60",
+        "d": "10",
+        "C": "200",
+        "v_rest": "-60",
+        "v_threshold": "-50",
+        "k": "1.6"
+      }
+    }
+  }

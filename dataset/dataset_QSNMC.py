@@ -96,3 +96,6 @@ class QSNMCDataset:
         """
         self.load_pickled_dataset()
         self._generate_spike_trains()
+
+        # Convert current unit from pA*0.01 to pA
+        self.current = self.current*1e-2

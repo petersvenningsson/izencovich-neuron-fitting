@@ -1,10 +1,13 @@
+ mutation_probability=0.25, gaussian_creep=True, creep_rate = 0.01)
+_(self, crossover_probability = 0.7, tournament_selection_parameter = 0.7, tournament_size = 3):¨
+
   {
     "_comment": "This file contains the parametrization of the Izencovich neuron. The max and min values of parameters must be set. Any parameters included in 'parameter_intervals' will be used in the optimization. The parameter must be found in the attribute of the Neuron model.",
     "parameter_intervals": {
       "a": "-0.1:0.4",
       "b": "0:2",
       "c": "-65:-50",
-      "d": "-1:12"
+      "d": "-2:30"
     },
     "neuron_seeds": {
       "Regular Spiking": {

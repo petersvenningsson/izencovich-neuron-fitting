@@ -8,7 +8,7 @@
 # Third party
 import numpy as np
 from scipy.signal import fftconvolve
-
+import matplotlib.pyplot as plt
 ###########
 # CLASSES #
 ###########
@@ -41,10 +41,12 @@ class MDStarComparator():
 
         # Convert spiking times to bin indices of size dt.
         spiking_times = spiking_times / self.dt
-        spiking_times = np.array(spiking_times, dtype='int')
+        #spiking_times = np.array(spiking_times, dtype='int')
+        spiking_times = np.rint(spiking_times).astype(int)
 
         # Generate spike_train graph
         spike_train = np.zeros(steps)
+
         spike_train[spiking_times] = 1
 
         return spike_train
@@ -68,22 +70,26 @@ class MDStarComparator():
         average_spike_train = average_spike_train / n_spike_trains
         return average_spike_train
 
-    def evaluate(self, individual, observed_spike_time_trains):
+    def evaluate(self, individual: "NeuronModel or list of spiking times", observed_spike_time_trains):
         """ MD* proposed by Richard Naud as a spike train similarity measure.
          See Improved Similarity Measures for Small Sets of Spike Trains, Richard Naud et al. for
-         more information."""
-        individual.simulate_spiking_times()
-        predicted_spike_time_train = individual.spike_times
+         more information.
+         """
+        try:
+            individual.simulate_spiking_times()
+            predicted_spike_time_train = individual.spike_times
+        except AttributeError:
+            predicted_spike_time_train = individual
         observed_spike_trains = []
 
         n_trains = len(observed_spike_time_trains)
 
+        predicted_spike_train = self.get_spike_train(predicted_spike_time_train)
         for spike_times in observed_spike_time_trains:
             spike_train = self.get_spike_train(spike_times)
             observed_spike_trains.append(spike_train)
 
         observed_average_spike_train = self.get_average_spike_train(observed_spike_time_trains)
-        predicted_spike_train = self.get_spike_train(predicted_spike_time_train)
 
         # Compute dot product <data, model>
         dot_product_observed_predicted = self._MD_dot_product(observed_average_spike_train, predicted_spike_train)
@@ -98,10 +104,14 @@ class MDStarComparator():
                 temp += self._MD_dot_product(observed_spike_trains[i], observed_spike_trains[j])
 
         normalization = n_trains * (n_trains - 1) / 2
-        dot_product_observed_observed = temp / normalization
+
+        if n_trains == 1:
+            dot_product_observed_observed = self._MD_dot_product(observed_average_spike_train, observed_average_spike_train)
+        else:
+            dot_product_observed_observed = temp / normalization
 
         normalization = dot_product_observed_observed + dot_product_predicted_predicted
         MDstar = 2 * dot_product_observed_predicted / normalization
 
-        print("Md* = {}".format(MDstar))
+        # print("Md* = {}".format(MDstar))
         return MDstar
