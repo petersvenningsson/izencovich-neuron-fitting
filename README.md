@@ -3,7 +3,7 @@ Fitting of dynamical systems single neuron models to experimental data using sto
 
 ## Modeling of neural spiking
 The models predict the electrical activity in the neuron as measured by voltage across the cell wall. The performance of the model is characterized by timing of the spiking events as visualized below.
-![](Iz_model_spiking.jpg)
+![](izhikevich_visualization/Iz_model_spiking.jpg)
 
 ## Performance metric and fitness function
 The fitness function and performance metric are defined as the distance between vector representations of the spiking activity. Formal definitions are found in the thesis.
