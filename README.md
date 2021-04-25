@@ -11,8 +11,11 @@ The fitness function and performance metric are defined as the distance between 
 
 ## Usage
 Run the GA for a model_type in 'SimpleIzencovichModel', 'IzencovichModelExtended', 'LIF'.
+
     python run_GA.py --model model_type
+    
 Run the GA with a population seeded from existing models found by previous researchers.
+
     python run_GA.py --seed True
     
 
