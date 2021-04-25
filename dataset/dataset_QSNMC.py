@@ -23,22 +23,26 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 class QSNMCDataset:
     """ Dataset loader for data belonging the 2009 competition QSNMC.
     """
-    def __init__(self, file_current = PATH + '/2009a/current.txt', file_voltage = PATH + '/2009a/voltage_allrep.txt', dt = 1e-4):
-        self.file_current = file_current
-        self.file_voltage = file_voltage
+    def __init__(self, filecurrent = PATH + '/2009a/current.txt', filevoltage = PATH + '/2009a/voltage_allrep.txt', dt = 1e-4, holdout_split = 32.7):
+        self.filecurrent = filecurrent
+        self.filevoltage = filevoltage
         self.dt = dt
         self.current = None
-        self.voltage = None
-        self.spike_trains = []
+        self.voltage = None # = i.ext in model
+        self.spike_trains = [] # used by GA
         self.gold_voltages = []
-        self.initialize_dataset()
+        self.load_pickled_dataset()
+        self.current = self.current*1e-2
+
+        self._generate_spike_trains()
+
 
     def _load_dataset(self):
         """ Loads the raw dataset voltage and current.
         """
         print("Loading data from .txt...")
-        current = np.loadtxt(self.file_current)
-        voltage = np.loadtxt(self.file_voltage)
+        current = np.loadtxt(self.filecurrent)
+        voltage = np.loadtxt(self.filevoltage)
 
         # trunkate the current signal to the length of the voltage signal.
         current = current[0:voltage.shape[0]]
@@ -50,18 +54,18 @@ class QSNMCDataset:
         """
         self._load_dataset()
         print("Serializing dataset...")
-        current_pickle_path = self.file_current + '.pickle'
-        voltage_pickle_path = self.file_voltage + '.pickle'
+        current_pickle_path = self.filecurrent + '.pickle'
+        voltage_pickle_path = self.filevoltage + '.pickle'
         with open(current_pickle_path, 'wb') as f:
-            pickle.dump(self._current, f)
+            pickle.dump(self.current, f)
         with open(voltage_pickle_path, 'wb') as f:
             pickle.dump(self.voltage, f)
 
     def load_pickled_dataset(self):
         """ Loads serialized dataset from .pickle file.
         """
-        current_pickle_path = self.file_current + '.pickle'
-        voltage_pickle_path = self.file_voltage + '.pickle'
+        current_pickle_path = self.filecurrent + '.pickle'
+        voltage_pickle_path = self.filevoltage + '.pickle'
 
         try:
             print("Attempting to read dataset from pickled files")
@@ -90,12 +94,3 @@ class QSNMCDataset:
             vm_trial = AnalogSignal(voltage_trial, self.dt)
             spike_train = vm_trial.threshold_detection(0)
             self.spike_trains.append(spike_train.spike_times)
-
-    def initialize_dataset(self):
-        """ Initializes the dataset by setting instance variables.
-        """
-        self.load_pickled_dataset()
-        self._generate_spike_trains()
-
-        # Convert current unit from pA*0.01 to pA
-        self.current = self.current*1e-2

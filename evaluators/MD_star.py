@@ -5,6 +5,8 @@
 ###########
 # IMPORTS #
 ###########
+# Standard
+import time
 # Third party
 import numpy as np
 from scipy.signal import fftconvolve
@@ -33,11 +35,12 @@ class MDStarComparator():
         dot_product_value = np.dot(spike_train_1_filtered, spike_train_2_filtered)
         return dot_product_value
 
-    def get_spike_train(self, spiking_times):
+    def get_spike_train(self, spiking_times, voided_time, voided_end):
         """
         Generates a spike spike train graph from spiking times.
         """
         steps = int(self.TMAX / self.dt)
+        voided_steps = list(range(int(voided_time/self.dt)))
 
         # Convert spiking times to bin indices of size dt.
         spiking_times = spiking_times / self.dt
@@ -46,12 +49,15 @@ class MDStarComparator():
 
         # Generate spike_train graph
         spike_train = np.zeros(steps)
-
         spike_train[spiking_times] = 1
 
+        spike_train[voided_steps] = 0
+        if voided_end is not None:
+            voided_end = int(voided_end / self.dt)
+            spike_train[voided_end:] = 0
         return spike_train
 
-    def get_average_spike_train(self, observed_spike_times):
+    def get_average_spike_train(self, observed_spike_times, voided_time, voided_end):
         """
         Given a set of spike trains calculates the mean spike train.
         """
@@ -64,32 +70,35 @@ class MDStarComparator():
             # Convert spiking times to bin indices of size dt.
             spike_train = spike_train/self.dt
             spike_train = np.array(spike_train, dtype='int')
-
             average_spike_train[spike_train] += 1.0
 
         average_spike_train = average_spike_train / n_spike_trains
+
+        voided_steps = list(range(int(voided_time/self.dt)))
+        average_spike_train[voided_steps] = 0
+        if voided_end is not None:
+            voided_end = int(voided_end / self.dt)
+            average_spike_train[voided_end:] = 0
         return average_spike_train
 
-    def evaluate(self, individual: "NeuronModel or list of spiking times", observed_spike_time_trains):
+    def evaluate(self, individual: "NeuronModel or list of spiking times", observed_spike_time_trains, voided_time = 0, voided_end = None):
         """ MD* proposed by Richard Naud as a spike train similarity measure.
          See Improved Similarity Measures for Small Sets of Spike Trains, Richard Naud et al. for
          more information.
          """
-        try:
-            individual.simulate_spiking_times()
-            predicted_spike_time_train = individual.spike_times
-        except AttributeError:
-            predicted_spike_time_train = individual
+        individual.simulate_spiking_times()
+        predicted_spike_time_train = individual.spike_times
         observed_spike_trains = []
 
         n_trains = len(observed_spike_time_trains)
 
-        predicted_spike_train = self.get_spike_train(predicted_spike_time_train)
+        predicted_spike_train = self.get_spike_train(predicted_spike_time_train, voided_time, voided_end)
+
         for spike_times in observed_spike_time_trains:
-            spike_train = self.get_spike_train(spike_times)
+            spike_train = self.get_spike_train(spike_times, voided_time, voided_end)
             observed_spike_trains.append(spike_train)
 
-        observed_average_spike_train = self.get_average_spike_train(observed_spike_time_trains)
+        observed_average_spike_train = self.get_average_spike_train(observed_spike_time_trains, voided_time, voided_end)
 
         # Compute dot product <data, model>
         dot_product_observed_predicted = self._MD_dot_product(observed_average_spike_train, predicted_spike_train)

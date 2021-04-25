@@ -1,7 +1,15 @@
-# izencovich-neuron-fitting
-Fitting of dyn-sys. neuron models to wild data with stochastic optimization methods.
+# Izhikevich-neuron-fitting
+Fitting of dynamical systems single neuron models to experimental data using stochastic optimization methods.
 
-# Exploratory implementation
+## Modeling of neural spiking
+The models predict the electrical activity in the neuron as measured by voltage across the cell wall. The performance of the model is characterized by timing of the spiking events as visualized below.
+![](Iz_model_spiking.jpg)
+
+## Performance metric and fitness function
+The fitness function and performance metric are defined as the distance between vector representations of the spiking activity. Formal definitions are found in the thesis.
+
+
+The GA implements the following techniques:
 * Real number encoding
 * Mutation
 * Crossover
@@ -9,12 +17,6 @@ Fitting of dyn-sys. neuron models to wild data with stochastic optimization meth
 * Population
 * Tournament selection
 
-# Abstract classes
-Neurons: (Parent of IzencovichNeurons, integrate-and-fire ect)
-
-Encoders: (Real number, Binary)
-
-Evaluator: (MD_star)
 
 # Classes
 

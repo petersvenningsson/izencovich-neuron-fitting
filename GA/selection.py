@@ -15,7 +15,7 @@ import copy
 
 
 class TournamentCrossover:
-    def __init__(self, crossover_probability = 0.7, tournament_selection_parameter = 0.7, tournament_size = 3):
+    def __init__(self, crossover_probability=0.7, tournament_selection_parameter=0.7, tournament_size=3):
         self.crossover_probability = crossover_probability
         self.tournament_selection_parameter = tournament_selection_parameter
         self.tournament_size = tournament_size

@@ -14,7 +14,7 @@ from .mutators import CreepMutation
 # CLASSES #
 ###########
 class Population:
-    """ Models a population of individuals. #TODO Write must implement specifications.
+    """ Models a population of individuals.
     """
     def __init__(self, NeuronModel, population_size, dataset):
         self.individuals = []
@@ -49,6 +49,7 @@ class Population:
         """ Initialize population without any seeding models. Model parameters are randonly selected within
         the config model parameter interval.
         """
+        random.seed(42)
 
         individuals = []
         for i in range(0, self.population_size):
